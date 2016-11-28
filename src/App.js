@@ -5,8 +5,7 @@ import './css/App.css';
 
 class App extends Component {
 
-  getUrls(input) {
-    console.log('input', input);
+  getUrls() {
     axios.get(`/potato`)
       .then((response) => {
         console.log('response', response);
@@ -14,6 +13,19 @@ class App extends Component {
     .catch((error) => {
       console.log(error);
     });
+  }
+
+  postUrls(input) {
+    console.log('input', input);
+    axios.post(`/post`, {
+      url: input
+    })
+      .then((response) => {
+        console.log('response', response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   render() {
@@ -24,7 +36,7 @@ class App extends Component {
           className="input-container"
           onSubmit={ (e) => {
             e.preventDefault();
-            this.getUrls(input.value);
+            this.postUrls(input.value);
             input.value=('');
           }}
         >
