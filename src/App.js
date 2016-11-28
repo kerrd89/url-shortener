@@ -6,7 +6,7 @@ import './css/App.css';
 class App extends Component {
 
   getUrls() {
-    axios.get(`/potato`)
+    axios.get(`/urls`)
       .then((response) => {
         console.log('response', response);
     })

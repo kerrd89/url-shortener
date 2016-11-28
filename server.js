@@ -1,6 +1,7 @@
 'use strict';
 const express = require('express');
 const bodyParser = require('body-parser');
+const shortID = require('shortid');
 var app = express();
 
 app.set('port', process.env.PORT || 3001);
@@ -12,17 +13,20 @@ app.listen(app.get('port'), () => {
   console.log(`listening on ${app.get('port')}`);
 });
 
-app.get('/api/potato', (request, response) => {
-  // const url = request.query.url;
-  response.send('potato');
+app.get('/api/urls', (request, response) => {
+  response.send({
+    url: "www.google.com/adfaldkf"
+  });
 });
 
 app.post('/api/post', (request, response) => {
-  const { url } = request.body;
+  let { url } = request.body;
+  let id = shortID();
+
   if(!request) {
     return response.status(422).send({
       error: "No URL was provided"
     });
   }
-  response.status(201).json({ url: url });
+  response.status(201).json({ shortID: id, url: url });
 });
