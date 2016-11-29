@@ -32,6 +32,7 @@ class App extends Component {
     let input;
     return (
       <div className="App">
+        <h1 className="title">Biggie/Smalls</h1>
         <form
           className="input-container"
           onSubmit={ (e) => {
@@ -43,17 +44,20 @@ class App extends Component {
           <input
             ref={ node => input = node}
             type="text"
-            placeholder="url"
+            placeholder="input your url here"
+            className="input-field"
           />
           <button
-          className="submit-button">
+            className="submit-button">
             Submit
           </button>
         </form>
 
+        <h1 className="short-url">display short url here</h1>
+
         <div className="list-container">
           <ul>
-            <li>list here</li>
+            <li>Full list here</li>
           </ul>
         </div>
       </div>
