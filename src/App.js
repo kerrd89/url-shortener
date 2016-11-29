@@ -2,12 +2,14 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import './css/reset.css';
 import './css/App.css';
+import _ from 'lodash';
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
-      displayShortUrl: null
+      displayShortUrl: null,
+      urlList: {}
     };
   }
 
@@ -15,6 +17,7 @@ class App extends Component {
     axios.get(`/urls`)
       .then((response) => {
         console.log('response', response);
+        this.setState({urlList: response});
     })
     .catch((error) => {
       console.log(error);
@@ -35,8 +38,17 @@ class App extends Component {
       });
   }
 
+  componentDidMount() {
+    this.getUrls();
+  }
+
   render() {
     let input;
+    // let list = this.state.urlList.map((url) => {
+    //   return(
+    //     <li>{url}</li>
+    //   )
+    // });
     return (
       <div className="App">
         <h1 className="title">Biggie/Smalls</h1>
@@ -69,7 +81,7 @@ class App extends Component {
 
         <div className="list-container">
           <ul>
-            <li>Full list here</li>
+            {/* {list} */}
           </ul>
         </div>
       </div>
