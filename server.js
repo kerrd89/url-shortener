@@ -8,7 +8,7 @@ app.set('port', process.env.PORT || 3001);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended:true }));
 app.use(express.static('public'));
-app.locals.urls = {};
+app.locals.urls = [];
 
 app.listen(app.get('port'), () => {
   console.log(`listening on ${app.get('port')}`);
@@ -20,7 +20,9 @@ app.get('/api/urls', (request, response) => {
 
 app.get('/api/:shortid', (request, response) => {
   let { shortid } = request.params;
-  let longUrl = app.locals.urls[shortid];
+  let longUrl = app.locals.urls.map((url) => {
+    if(url.shortID === shortid) return url.longUrl;
+  });
 
   if(!longUrl) return response.status(404);
 
@@ -29,8 +31,12 @@ app.get('/api/:shortid', (request, response) => {
 
 app.post('/api/post', (request, response) => {
   let { url } = request.body;
-
   let id = shortID();
+  let obj = {};
+  obj.shortID = id;
+  obj.createdAt = Date.now();
+  obj.longUrl = url;
+  obj.count = 0;
 
   if(!request) {
     return response.status(422).send({
@@ -38,6 +44,6 @@ app.post('/api/post', (request, response) => {
     });
   }
 
-  app.locals.urls[id] = url;
+  app.locals.urls.push(obj);
   response.status(201).json(id);
 });
