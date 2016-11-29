@@ -39,5 +39,5 @@ app.post('/api/post', (request, response) => {
   }
 
   app.locals.urls[id] = url;
-  response.status(201).json(app.locals.urls);
+  response.status(201).json(id);
 });
