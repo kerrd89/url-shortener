@@ -2,19 +2,21 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import './css/reset.css';
 import './css/App.css';
+import _ from 'lodash';
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
-      displayShortUrl: null
+      displayShortUrl: null,
+      urlList: []
     };
   }
 
   getUrls() {
     axios.get(`/urls`)
       .then((response) => {
-        console.log('response', response);
+        this.setState({urlList: response.data.urls});
     })
     .catch((error) => {
       console.log(error);
@@ -22,21 +24,32 @@ class App extends Component {
   }
 
   postUrls(input) {
-    console.log('input', input);
     axios.post(`/post`, {
       url: input
     })
       .then((response) => {
-        console.log('response', response);
         this.setState({displayShortUrl: "http://localhost:3001/api/" + response.data});
+        this.getUrls();
       })
       .catch((error) => {
         console.log(error);
       });
   }
 
+  componentDidMount() {
+    this.getUrls();
+  }
+
   render() {
     let input;
+    let list;
+    if(this.state.urlList.length){
+      list = this.state.urlList.map((url) => {
+        return(
+          <li key={url.shortID}>{url.longUrl}:{url.shortID}</li>
+        )
+      });
+    }
     return (
       <div className="App">
         <h1 className="title">Biggie/Smalls</h1>
@@ -69,7 +82,7 @@ class App extends Component {
 
         <div className="list-container">
           <ul>
-            <li>Full list here</li>
+            { list }
           </ul>
         </div>
       </div>
