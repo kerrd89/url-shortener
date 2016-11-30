@@ -3,7 +3,7 @@ import axios from 'axios';
 import './css/reset.css';
 import './css/App.css';
 import _ from 'lodash';
-import moment from 'moment'
+import moment from 'moment';
 
 class App extends Component {
   constructor() {
@@ -11,6 +11,7 @@ class App extends Component {
     this.state = {
       displayShortUrl: null,
       urlList: []
+
     };
   }
 
@@ -35,6 +36,12 @@ class App extends Component {
       .catch((error) => {
         console.log(error);
       });
+  }
+
+  sortBy(property, direction) {
+    const { urlList } = this.state;
+    let sortedUrls = _.orderBy(urlList, [property], [direction]);
+    this.setState({ urlList: sortedUrls });
   }
 
   componentDidMount() {
@@ -83,7 +90,17 @@ class App extends Component {
         </a>
 
         <div className="list-container">
-        <button>Sort By Popularity</button>
+        <button
+          onClick={() => this.sortBy('count', 'asc')}
+          >
+            Sort By Popularity
+          </button>
+        <button
+          onClick={() => this.sortBy('createdAt', 'desc')}
+        >
+          Sort By Date
+        </button>
+
           <ul>
             { list }
           </ul>
