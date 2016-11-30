@@ -54,3 +54,5 @@ if (!module.parent) {
     console.log(`listening on ${app.get('port')}`);
   });
 }
+
+module.exports = app;
