@@ -20,8 +20,12 @@ app.get('/api/urls', (request, response) => {
 
 app.get('/api/:shortid', (request, response) => {
   let { shortid } = request.params;
-  let longUrl = app.locals.urls.map((url) => {
-    if(url.shortID === shortid) return url.longUrl;
+
+  let longUrl = app.locals.urls.map((url, i) => {
+    if(url.shortID === shortid) {
+      app.locals.urls[i].count++;
+      return url.longUrl;
+    }
   });
 
   if(!longUrl) return response.status(404);
