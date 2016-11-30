@@ -10,8 +10,8 @@ class App extends Component {
     super();
     this.state = {
       displayShortUrl: null,
-      urlList: []
-
+      urlList: [],
+      ascending: true
     };
   }
 
@@ -54,8 +54,12 @@ class App extends Component {
     if(this.state.urlList.length){
       list = this.state.urlList.map((url) => {
         return(
-          <li key={url.shortID}>{url.longUrl}:{url.shortID}:
-          {moment(url.createdAt).format('MMMM Do, h:mm a')}:{url.count}</li>
+          <tr key={url.shortID}>
+            <td>{url.longUrl}</td>
+            <td>{url.shortID}</td>
+            <td>{moment(url.createdAt).format('MMMM Do, h:mm a')}</td>
+            <td>{url.count}</td>
+          </tr>
         )
       });
     }
@@ -91,19 +95,39 @@ class App extends Component {
 
         <div className="list-container">
         <button
-          onClick={() => this.sortBy('count', 'asc')}
+          onClick={() => this.sortBy('count', 'desc')}
           >
-            Sort By Popularity
+            Sort By Popularity ⬇︎
+          </button>
+
+          <button
+            onClick={() => this.sortBy('count', 'asc')}
+            >
+              Sort By Popularity ⬆︎
+            </button>
+
+          <button
+            onClick={() => this.sortBy('createdAt', 'asc')}
+          >
+            Sort By Date ⬆︎
           </button>
         <button
           onClick={() => this.sortBy('createdAt', 'desc')}
         >
-          Sort By Date
+          Sort by Date ⬇︎
         </button>
 
-          <ul>
-            { list }
-          </ul>
+          <table>
+            <tbody>
+              <tr>
+                <th>Original URL</th>
+                <th>Short URL</th>
+                <th>Date Created</th>
+                <th>Popularity</th>
+              </tr>
+                { list }
+            </tbody>
+          </table>
         </div>
       </div>
     );
