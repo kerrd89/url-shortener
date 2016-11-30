@@ -10,9 +10,9 @@ app.use(bodyParser.urlencoded({ extended:true }));
 app.use(express.static('public'));
 app.locals.urls = [];
 
-app.listen(app.get('port'), () => {
-  console.log(`listening on ${app.get('port')}`);
-});
+// app.listen(app.get('port'), () => {
+//   console.log(`listening on ${app.get('port')}`);
+// });
 
 app.get('/api/urls', (request, response) => {
   response.send({ urls: app.locals.urls });
@@ -47,3 +47,10 @@ app.post('/api/post', (request, response) => {
   app.locals.urls.push(obj);
   response.status(201).json(id);
 });
+
+// for testing to work?
+if (!module.parent) {
+  app.listen(app.get('port'), () => {
+    console.log(`listening on ${app.get('port')}`);
+  });
+}
