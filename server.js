@@ -21,13 +21,12 @@ app.get('/api/:shortid', (request, response) => {
   let longUrl = app.locals.urls.map((url, i) => {
     if(url.shortID === shortid) {
       app.locals.urls[i].count++;
-      return url.longUrl;
+      response.redirect(301, url.longUrl);
     }
   });
 
   if(!longUrl) return response.status(404);
 
-  response.redirect(301, longUrl);
 });
 
 app.post('/api/post', (request, response) => {
@@ -35,17 +34,17 @@ app.post('/api/post', (request, response) => {
   let obj = {};
   obj.shortID = shortID();
   obj.createdAt = Date.now();
-  obj.longUrl = url.longUrl;
+  obj.longUrl = url;
   obj.count = 0;
 
-  if(!request.body.url.longUrl) {
+  if(!request) {
     return response.status(422).send({
       error: "No URL was provided"
     });
   }
 
   app.locals.urls.push(obj);
-  response.status(201).json(id);
+  response.status(201).json(obj.shortID);
 });
 
 // for testing to work
