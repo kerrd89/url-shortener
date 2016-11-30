@@ -3,6 +3,7 @@ import axios from 'axios';
 import './css/reset.css';
 import './css/App.css';
 import _ from 'lodash';
+import moment from 'moment'
 
 class App extends Component {
   constructor() {
@@ -46,7 +47,8 @@ class App extends Component {
     if(this.state.urlList.length){
       list = this.state.urlList.map((url) => {
         return(
-          <li key={url.shortID}>{url.longUrl}:{url.shortID}</li>
+          <li key={url.shortID}>{url.longUrl}:{url.shortID}:
+          {moment(url.createdAt).format('MMMM Do, h:mm a')}:{url.count}</li>
         )
       });
     }
@@ -81,6 +83,7 @@ class App extends Component {
         </a>
 
         <div className="list-container">
+        <button>Sort By Popularity</button>
           <ul>
             { list }
           </ul>
