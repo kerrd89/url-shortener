@@ -5,14 +5,14 @@ const shortID = require('shortid');
 const axios = require('axios');
 var app = express();
 const regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
+var Nightmare = require('nightmare');
+var nightmare = new Nightmare({ show: false });
 
 app.set('port', process.env.PORT || 3001);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended:true }));
 app.use(express.static('public'));
 app.locals.urls = [];
-
-
 
 app.get('/api/urls', (request, response) => {
   response.send({ urls: app.locals.urls });
@@ -33,19 +33,25 @@ app.get('/api/:shortid', (request, response) => {
 });
 
 const getTitle = (url) => {
-    axios.get(`http://textance.herokuapp.com/title/www.${url.slice(7)}`)
-    .then((response) => {
-      app.locals.urls[app.locals.urls.length-1].title = response.data;
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+  axios.get(`http://textance.herokuapp.com/title/www.${url.slice(7)}`)
+  .then((response) => {
+    app.locals.urls[app.locals.urls.length-1].title = response.data;
+  })
+  .catch((error) => {
+    console.log(error);
+    app.locals.urls[app.locals.urls.length-1].title = "title not found";
+  });
+  // nightmare
+  // .goto(url)
+  // .title()
+  // .then( r => console.log(r))
+  // .end();
 };
 
 app.post('/api/post', (request, response) => {
   let { url } = request.body;
   if(!regexp.test(url)) {
-    response.status(422).send({
+    return response.status(422).send({
     error: "No URL was provided"
   });}
   let obj = {};
