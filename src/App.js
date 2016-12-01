@@ -32,7 +32,7 @@ class App extends Component {
       this.setState({displayShortUrl: "Not a valid URL"});
       return;
     }
-    console.log("hit here");
+
     axios.post(`/post`, {
       url: input
     })
