@@ -35,19 +35,19 @@ app.get('/api/:shortid', (request, response) => {
 });
 
 const getTitle = (url) => {
-    // axios.get(`http://textance.herokuapp.com/title/www.${url.slice(7)}`)
-    // .then((response) => {
-    //   app.locals.urls[app.locals.urls.length-1].title = response.data;
-    // })
-    // .catch((error) => {
-    //   console.log(error);
-    // });
-    let title = "null";
-    var selector = 'title';
-    nightmare
-    .goto(url)
-    .title()
-    .then( r => console.log(r));
+    axios.get(`http://textance.herokuapp.com/title/www.${url.slice(7)}`)
+    .then((response) => {
+      app.locals.urls[app.locals.urls.length-1].title = response.data;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+    // let title = "null";
+    // var selector = 'title';
+    // nightmare
+    // .goto(url)
+    // .title()
+    // .then( r => console.log(r));
 };
 
 app.post('/api/post', (request, response) => {
@@ -63,16 +63,8 @@ app.post('/api/post', (request, response) => {
   obj.count = 0;
   obj.title = getTitle(url);
 
-  nightmare
-  .goto(url)
-  .title()
-  .then((title) => {
-    console.log(title);
-    console.log(obj);
-    // obj.title = title;
-    // app.locals.urls.push(obj);
-    // response.status(201).json(obj.shortID);
-  });
+    app.locals.urls.push(obj);
+    response.status(201).json(obj.shortID);
 });
 
 // for testing to work
