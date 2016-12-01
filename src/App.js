@@ -13,7 +13,8 @@ class App extends Component {
       displayShortUrl: null,
       urlList: [],
       ascending: true,
-      filterValue: ""
+      filterValue: "",
+      activeFilter: "Date Created"
     };
   }
 
@@ -68,7 +69,7 @@ class App extends Component {
   render() {
     let input;
     let list;
-    let urls = this.filterUrls(this.state.filterValue);
+    let urls = this.filterUrls(this.state.filterValue, this.state.activeFilter);
     if(urls.length){
       list = urls.map((url) => {
         return(
@@ -84,18 +85,18 @@ class App extends Component {
         )
       });
     }
-    if(!this.state.ascending) {list.reverse()}
+    if(!this.state.ascending && list) {list.reverse()}
     return (
       <div className="App">
-      <h1 className="title">Biggie/Smalls</h1>
-      <form
-      className="input-container"
-      onSubmit={ (e) => {
-        e.preventDefault();
-        this.postUrls(input.value);
-        input.value=('');
-      }}
-      >
+        <h1 className="title">Biggie/Smalls</h1>
+        <form
+          className="input-container"
+          onSubmit={ (e) => {
+            e.preventDefault();
+            this.postUrls(input.value);
+            input.value=('');
+          }}
+        >
       <input
       ref={ node => input = node}
       type="text"
@@ -123,39 +124,6 @@ class App extends Component {
           placeholder="Search Long URLs"
           onChange={(e) => this.setState({filterValue: e.target.value})}
         />
-      <div className="pop-sort">
-
-        <button
-          onClick={() => {
-            this.sortBy('count')
-            this.setState({ascending: false})
-        }}
-          className="sort-button"
-          >
-          Popularity
-        </button>
-
-        <button
-          onClick={() => {
-            this.sortBy('createdAt')
-            this.setState({ascending: true})
-          }}
-          className="sort-button"
-          >
-          Date
-        </button>
-
-        <button
-          onClick={() => this.setState({ascending: !this.state.ascending})}
-          className="sort-button"
-          >
-          {this.state.ascending ? "⬆︎" : "⬇︎"}
-        </button>
-
-
-
-      </div>
-
       </section>
 
       <table className="url-table">
@@ -164,8 +132,28 @@ class App extends Component {
       <th className="table-headers">Title</th>
       <th className="table-headers">Original URL</th>
       <th className="table-headers">Short URL</th>
-      <th className="table-headers">Date Created</th>
-      <th className="table-headers">Popularity</th>
+      <th className="table-headers"
+        onClick={() => {
+          this.sortBy('createdAt')
+          this.setState({ascending: true, activeFilter: "Date Created"})
+        }}
+      >Date Created
+        {this.state.activeFilter === "Date Created" && '●'}
+      </th>
+      <th className="table-headers"
+        onClick={() => {
+          this.sortBy('count')
+          this.setState({ascending: false, activeFilter: "Popularity"})
+        }}
+      >Popularity
+        {this.state.activeFilter === "Popularity" && '●'}
+      </th>
+      <th className="sort-button"
+      onClick={() => this.setState({ascending: !this.state.ascending})}
+
+      >
+      Sort {this.state.ascending ? "⬆︎" : "⬇︎"}
+      </th>
       </tr>
       </thead>
       <tbody>
