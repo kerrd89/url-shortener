@@ -33,7 +33,8 @@ describe('GET /api/:shortid', () => {
       shortID: "rkc3bAsGe",
       createdAt: 1480479154462,
       longUrl: "http://google.com",
-      count: 0
+      count: 0,
+      title: "Google"
     };
     app.locals.urls = [this.url];
   });
@@ -45,7 +46,7 @@ describe('GET /api/:shortid', () => {
   it('should return a url with the provided short id', (done) => {
 
     request(app)
-      .get(`/api/${this.url.shortid}`)
+      .get(`/api/${this.url.shortID}`)
       .expect(301, done);
   });
 });
@@ -64,10 +65,11 @@ describe('POST /api/post', () => {
 
     request(app)
       .post('/api/post')
-      .send({url})
+      .send({url: url.longUrl})
       .expect(201)
       .end(() => {
-        assert.equal(app.locals.urls, [url]);
+        assert.equal(app.locals.urls[0].count, 0);
+        assert.equal(app.locals.urls[0].longUrl, "http://google.com");
         done();
       });
   });
@@ -77,7 +79,7 @@ describe('POST /api/post', () => {
 
     request(app)
       .post('/api/post')
-      .send({ url })
+      .send({ url: url.longUrl })
       .expect(422, done);
   });
 });

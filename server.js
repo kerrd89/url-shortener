@@ -35,25 +35,25 @@ app.get('/api/:shortid', (request, response) => {
 });
 
 const getTitle = (url) => {
-    axios.get(`http://textance.herokuapp.com/title/www.${url.slice(7)}`)
-    .then((response) => {
-      app.locals.urls[app.locals.urls.length-1].title = response.data;
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-    // let title = "null";
-    // var selector = 'title';
-    // nightmare
-    // .goto(url)
-    // .title()
-    // .then( r => console.log(r));
+  axios.get(`http://textance.herokuapp.com/title/www.${url.slice(7)}`)
+  .then((response) => {
+    app.locals.urls[app.locals.urls.length-1].title = response.data;
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+  // let title = "null";
+  // var selector = 'title';
+  // nightmare
+  // .goto(url)
+  // .title()
+  // .then( r => console.log(r));
 };
 
 app.post('/api/post', (request, response) => {
   let { url } = request.body;
   if(!regexp.test(url)) {
-    response.status(422).send({
+    return response.status(422).send({
     error: "No URL was provided"
   });}
   let obj = {};
