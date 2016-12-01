@@ -11,15 +11,7 @@ app.use(bodyParser.urlencoded({ extended:true }));
 app.use(express.static('public'));
 app.locals.urls = [];
 
-const getTitle = (url) => {
-    axios.get(`http://textance.herokuapp.com/title/www.${url.slice(7)}`)
-    .then((response) => {
-      app.locals.urls[app.locals.urls.length-1].title = response.data;
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-};
+
 
 app.get('/api/urls', (request, response) => {
   response.send({ urls: app.locals.urls });
@@ -39,23 +31,42 @@ app.get('/api/:shortid', (request, response) => {
 
 });
 
-app.post('/api/post', (request, response) => {
-  let { url } = request.body;
-  let obj = {};
-  obj.shortID = shortID();
-  obj.createdAt = Date.now();
-  obj.longUrl = url;
-  obj.count = 0;
-  obj.title = getTitle(url);
+const getTitle = (url) => {
+    axios.get(`http://textance.herokuapp.com/title/www.${url.slice(7)}`)
+    .then((response) => {
+      app.locals.urls[app.locals.urls.length-1].title = response.data;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
 
+app.post('/api/post', (request, response) => {
   if(!request) {
     return response.status(422).send({
       error: "No URL was provided"
     });
   }
 
-  app.locals.urls.push(obj);
-  response.status(201).json(obj.shortID);
+  let { url } = request.body;
+  let obj = {};
+  obj.shortID = shortID();
+  obj.createdAt = Date.now();
+  obj.longUrl = url;
+  obj.count = 0;
+
+  axios.get(`http://textance.herokuapp.com/title/www.${url.slice(7)}`)
+  .then((response) => {
+    obj.title = response.data;
+    app.locals.urls.push(obj);
+    response.status(201).json(obj.shortID);
+  })
+  .catch((error) => {
+    obj.title = "Service Not Available";
+    app.locals.urls.push(obj);
+    response.status(201).json(obj.shortID);
+    console.log(error);
+  });
 });
 
 // for testing to work
