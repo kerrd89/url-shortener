@@ -13,7 +13,7 @@ class App extends Component {
       displayShortUrl: null,
       urlList: [],
       ascending: true,
-      filteredUrls: []
+      filterValue: ""
     };
   }
 
@@ -53,7 +53,8 @@ class App extends Component {
         return url;
       }
     });
-    this.setState({ filteredUrls: urls });
+    return urls;
+    // this.setState({ filteredUrls: urls });
   }
 
   sortBy(property, direction) {
@@ -70,19 +71,19 @@ class App extends Component {
     let input;
     let list;
 
-    const { filteredUrls } = this.state;
 // TODO: ternary here to display regular list or filtered list?
 
-
-    if(this.state.urlList.length){
-      list = this.state.urlList.map((url) => {
+    let urls = this.filterUrls(this.state.filterValue);
+    console.log(urls)
+    if(urls.length){
+      list = urls.map((url) => {
         return(
           <tr key={url.shortID}
             className="url-row"
           >
             <td>{url.title}</td>
-            <td>{url.longUrl}</td>
-            <td>{url.shortID}</td>
+            <td><a href={url.longUrl}>{url.longUrl}</a></td>
+            <td><a href={"http://localhost:3001/api/"+url.shortID}>{url.shortID}</a></td>
             <td>{moment(url.createdAt).format('MMM Do, h:mm a')}</td>
             <td>{url.count}</td>
           </tr>
@@ -125,7 +126,7 @@ class App extends Component {
               type="text"
               className="search-field"
               placeholder="Search Long URLs"
-              onChange={(e) => {this.filterUrls(e.target.value) }}
+              onChange={(e) => this.setState({filterValue: e.target.value})}
             />
             <div className="pop-sort">
               <button
