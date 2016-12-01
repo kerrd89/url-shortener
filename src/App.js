@@ -4,6 +4,7 @@ import './css/reset.css';
 import './css/App.css';
 import _ from 'lodash';
 import moment from 'moment';
+const regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
 
 class App extends Component {
   constructor() {
@@ -11,7 +12,8 @@ class App extends Component {
     this.state = {
       displayShortUrl: null,
       urlList: [],
-      ascending: true
+      ascending: true,
+      filteredUrls: []
     };
   }
 
@@ -26,6 +28,11 @@ class App extends Component {
   }
 
   postUrls(input) {
+    if(!regexp.test(input)) {
+      this.setState({displayShortUrl: "Not a valid URL"});
+      return;
+    }
+    console.log("hit here");
     axios.post(`/post`, {
       url: input
     })
@@ -35,7 +42,18 @@ class App extends Component {
       })
       .catch((error) => {
         console.log(error);
+        this.setState({displayShortUrl: error});
       });
+  }
+
+  filterUrls(searchValue) {
+    let urls = this.state.urlList.filter(url => {
+      if (url.longUrl.indexOf(searchValue.toLowerCase()) >= 0) {
+        console.log('filtered URL', url);
+        return url;
+      }
+    });
+    this.setState({ filteredUrls: urls });
   }
 
   sortBy(property, direction) {
@@ -51,14 +69,21 @@ class App extends Component {
   render() {
     let input;
     let list;
+
+    const { filteredUrls } = this.state;
+// TODO: ternary here to display regular list or filtered list?
+
+
     if(this.state.urlList.length){
       list = this.state.urlList.map((url) => {
         return(
-          <tr key={url.shortID}>
+          <tr key={url.shortID}
+            className="url-row"
+          >
             <td>{url.title}</td>
             <td>{url.longUrl}</td>
             <td>{url.shortID}</td>
-            <td>{moment(url.createdAt).format('MMMM Do, h:mm a')}</td>
+            <td>{moment(url.createdAt).format('MMM Do, h:mm a')}</td>
             <td>{url.count}</td>
           </tr>
         )
@@ -78,7 +103,7 @@ class App extends Component {
           <input
             ref={ node => input = node}
             type="text"
-            placeholder="input your url here"
+            placeholder="Type your url here"
             className="input-field"
           />
           <button
@@ -95,39 +120,56 @@ class App extends Component {
         </a>
 
         <div className="list-container">
-        <button
-          onClick={() => this.sortBy('count', 'desc')}
-          >
-            Sort By Popularity ⬇︎
-          </button>
+          <section className="list-controls">
+            <input
+              type="text"
+              className="search-field"
+              placeholder="Search Long URLs"
+              onChange={(e) => {this.filterUrls(e.target.value) }}
+            />
+            <div className="pop-sort">
+              <button
+                onClick={() => this.sortBy('count', 'desc')}
+                className="sort-button"
+              >
+                Popularity ⬆︎
+              </button>
+              <button
+                onClick={() => this.sortBy('count', 'asc')}
+                className="sort-button"
+              >
+                Popularity ⬇︎
+              </button>
+            </div>
+            <div className="date-sort">
+              <button
+                onClick={() => this.sortBy('createdAt', 'desc')}
+                className="sort-button"
+              >
+                Date ⬆︎
+              </button>
+              <button
+                onClick={() => this.sortBy('createdAt', 'asc')}
+                className="sort-button"
+              >
+                Date ⬇︎
+              </button>
+            </div>
 
-          <button
-            onClick={() => this.sortBy('count', 'asc')}
-            >
-              Sort By Popularity ⬆︎
-            </button>
+          </section>
 
-          <button
-            onClick={() => this.sortBy('createdAt', 'asc')}
-          >
-            Sort By Date ⬆︎
-          </button>
-        <button
-          onClick={() => this.sortBy('createdAt', 'desc')}
-        >
-          Sort by Date ⬇︎
-        </button>
-
-          <table>
-            <tbody>
+          <table className="url-table">
+            <thead>
               <tr>
-                <th>Title</th>
-                <th>Original URL</th>
-                <th>Short URL</th>
-                <th>Date Created</th>
-                <th>Popularity</th>
+                <th className="table-headers">Title</th>
+                <th className="table-headers">Original URL</th>
+                <th className="table-headers">Short URL</th>
+                <th className="table-headers">Date Created</th>
+                <th className="table-headers">Popularity</th>
               </tr>
-                { list }
+            </thead>
+            <tbody>
+              { list }
             </tbody>
           </table>
         </div>

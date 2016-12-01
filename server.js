@@ -4,6 +4,9 @@ const bodyParser = require('body-parser');
 const shortID = require('shortid');
 const axios = require('axios');
 var app = express();
+const regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
+var Nightmare = require('nightmare');
+var nightmare = new Nightmare({ show: true });
 
 app.set('port', process.env.PORT || 3001);
 app.use(bodyParser.json());
@@ -11,15 +14,7 @@ app.use(bodyParser.urlencoded({ extended:true }));
 app.use(express.static('public'));
 app.locals.urls = [];
 
-const getTitle = (url) => {
-    axios.get(`http://textance.herokuapp.com/title/www.${url.slice(7)}`)
-    .then((response) => {
-      app.locals.urls[app.locals.urls.length-1].title = response.data;
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-};
+
 
 app.get('/api/urls', (request, response) => {
   response.send({ urls: app.locals.urls });
@@ -39,8 +34,28 @@ app.get('/api/:shortid', (request, response) => {
 
 });
 
+const getTitle = (url) => {
+    // axios.get(`http://textance.herokuapp.com/title/www.${url.slice(7)}`)
+    // .then((response) => {
+    //   app.locals.urls[app.locals.urls.length-1].title = response.data;
+    // })
+    // .catch((error) => {
+    //   console.log(error);
+    // });
+    let title = "null";
+    var selector = 'title';
+    nightmare
+    .goto(url)
+    .title()
+    .then( r => console.log(r));
+};
+
 app.post('/api/post', (request, response) => {
   let { url } = request.body;
+  if(!regexp.test(url)) {
+    response.status(422).send({
+    error: "No URL was provided"
+  });}
   let obj = {};
   obj.shortID = shortID();
   obj.createdAt = Date.now();
@@ -48,14 +63,16 @@ app.post('/api/post', (request, response) => {
   obj.count = 0;
   obj.title = getTitle(url);
 
-  if(!request) {
-    return response.status(422).send({
-      error: "No URL was provided"
-    });
-  }
-
-  app.locals.urls.push(obj);
-  response.status(201).json(obj.shortID);
+  nightmare
+  .goto(url)
+  .title()
+  .then((title) => {
+    console.log(title);
+    console.log(obj);
+    // obj.title = title;
+    // app.locals.urls.push(obj);
+    // response.status(201).json(obj.shortID);
+  });
 });
 
 // for testing to work
