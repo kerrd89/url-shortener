@@ -2,6 +2,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const shortID = require('shortid');
+const axios = require('axios');
 var app = express();
 
 app.set('port', process.env.PORT || 3001);
@@ -10,6 +11,15 @@ app.use(bodyParser.urlencoded({ extended:true }));
 app.use(express.static('public'));
 app.locals.urls = [];
 
+const getTitle = (url) => {
+    axios.get(`http://textance.herokuapp.com/title/www.${url.slice(7)}`)
+    .then((response) => {
+      app.locals.urls[app.locals.urls.length-1].title = response.data;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
 
 app.get('/api/urls', (request, response) => {
   response.send({ urls: app.locals.urls });
@@ -36,6 +46,7 @@ app.post('/api/post', (request, response) => {
   obj.createdAt = Date.now();
   obj.longUrl = url;
   obj.count = 0;
+  obj.title = getTitle(url);
 
   if(!request) {
     return response.status(422).send({
