@@ -82,8 +82,8 @@ class App extends Component {
             className="url-row"
           >
             <td>{url.title}</td>
-            <td>{url.longUrl}</td>
-            <td>{url.shortID}</td>
+            <td><a href={url.longUrl}>{url.longUrl}</a></td>
+            <td><a href={"http://localhost:3001/api/"+url.shortID}>{url.shortID}</a></td>
             <td>{moment(url.createdAt).format('MMM Do, h:mm a')}</td>
             <td>{url.count}</td>
           </tr>
