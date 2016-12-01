@@ -55,6 +55,7 @@ class App extends Component {
       list = this.state.urlList.map((url) => {
         return(
           <tr key={url.shortID}>
+            <td>{url.title}</td>
             <td>{url.longUrl}</td>
             <td>{url.shortID}</td>
             <td>{moment(url.createdAt).format('MMMM Do, h:mm a')}</td>
@@ -120,6 +121,7 @@ class App extends Component {
           <table>
             <tbody>
               <tr>
+                <th>Title</th>
                 <th>Original URL</th>
                 <th>Short URL</th>
                 <th>Date Created</th>
