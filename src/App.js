@@ -70,99 +70,98 @@ class App extends Component {
     let input;
     let list;
     let urls = this.filterUrls(this.state.filterValue, this.state.activeFilter);
+
     if(urls.length){
       list = urls.map((url) => {
         return(
           <tr key={url.shortID}
           className="url-row"
           >
-          <td>{url.title}</td>
-          <td><a href={url.longUrl}>{url.longUrl}</a></td>
-          <td><a href={"http://localhost:3001/api/"+url.shortID}>{url.shortID}</a></td>
-          <td>{moment(url.createdAt).format('MMM Do, h:mm a')}</td>
-          <td>{url.count}</td>
+            <td>{url.title}</td>
+            <td><a href={url.longUrl}>{url.longUrl}</a></td>
+            <td><a href={"http://localhost:3001/api/"+url.shortID}>{url.shortID}</a></td>
+            <td>{moment(url.createdAt).format('MMM Do, h:mm a')}</td>
+            <td>{url.count}</td>
           </tr>
         )
       });
     }
+
     if(!this.state.ascending && list) {list.reverse()}
-    return (
-      <div className="App">
-        <h1 className="title">Biggie/Smalls</h1>
-        <form
-          className="input-container"
-          onSubmit={ (e) => {
-            e.preventDefault();
-            this.postUrls(input.value);
-            input.value=('');
-          }}
-        >
-      <input
-      ref={ node => input = node}
-      type="text"
-      placeholder="Type your url here"
-      className="input-field"
-      />
-      <button
-      className="submit-button">
-      Submit
-      </button>
-      </form>
+      return (
+        <div className="App">
+          <h1 className="title">Biggie/Smalls</h1>
+          <form
+            className="input-container"
+            onSubmit={ (e) => {
+              e.preventDefault();
+              this.postUrls(input.value);
+              input.value=('');
+            }}
+          >
+            <input
+              ref={ node => input = node}
+              type="text"
+              placeholder="Type your url here"
+              className="input-field"
+            />
+            <button
+              className="submit-button"
+            >
+              Submit
+            </button>
+          </form>
+          <a href={this.state.displayShortUrl}>
+              <h1 className="short-url"
+                display={this.state.displayShortUrl}>
+                {this.state.displayShortUrl}
+              </h1>
+          </a>
 
-      <a href={this.state.displayShortUrl}>
-      <h1 className="short-url"
-      display={this.state.displayShortUrl}>
-      {this.state.displayShortUrl}
-      </h1>
-      </a>
-
-      <div className="list-container">
-        <section className="list-controls">
-        <input
-          type="text"
-          className="search-field"
-          placeholder="Search Long URLs"
-          onChange={(e) => this.setState({filterValue: e.target.value})}
-        />
-      </section>
-
-      <table className="url-table">
-      <thead>
-      <tr>
-      <th className="table-headers">Title</th>
-      <th className="table-headers">Original URL</th>
-      <th className="table-headers">Short URL</th>
-      <th className="table-headers"
-        onClick={() => {
-          this.sortBy('createdAt')
-          this.setState({ascending: true, activeFilter: "Date Created"})
-        }}
-      >Date Created
-        {this.state.activeFilter === "Date Created" && '●'}
-      </th>
-      <th className="table-headers"
-        onClick={() => {
-          this.sortBy('count')
-          this.setState({ascending: false, activeFilter: "Popularity"})
-        }}
-      >Popularity
-        {this.state.activeFilter === "Popularity" && '●'}
-      </th>
-      <th className="sort-button"
-      onClick={() => this.setState({ascending: !this.state.ascending})}
-
-      >
-      Sort {this.state.ascending ? "⬆︎" : "⬇︎"}
-      </th>
-      </tr>
-      </thead>
-      <tbody>
-      { list }
-      </tbody>
-      </table>
-      </div>
-      </div>
-    );
+          <div className="list-container">
+            <section className="list-controls">
+              <input
+                type="text"
+                className="search-field"
+                placeholder="Search Long URLs"
+                onChange={(e) => this.setState({filterValue: e.target.value})}
+              />
+            </section>
+            <table className="url-table">
+              <thead>
+                <tr>
+                  <th className="table-headers">Title</th>
+                  <th className="table-headers">Original URL</th>
+                  <th className="table-headers">Short URL</th>
+                  <th className="table-headers"
+                    onClick={() => {
+                      this.sortBy('createdAt')
+                      this.setState({ascending: true, activeFilter: "Date Created"})
+                    }}
+                  >
+                    Date Created {this.state.activeFilter === "Date Created" && '●'}
+                  </th>
+                  <th className="table-headers"
+                    onClick={() => {
+                      this.sortBy('count')
+                      this.setState({ascending: false, activeFilter: "Popularity"})
+                    }}
+                  >Popularity {this.state.activeFilter === "Popularity" && '●'}
+                  </th>
+                  <th className="sort-button"
+                    onClick={() => this.setState({ascending: !this.state.ascending})}
+                  >
+                  Sort {this.state.ascending ? "⬆︎" : "⬇︎"}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                { list }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      );
   }
 }
 
