@@ -122,12 +122,14 @@ class App extends Component {
 
         <div className="list-container">
           <section className="list-controls">
-            <input
-              type="text"
-              className="search-field"
-              placeholder="Search Long URLs"
-              onChange={(e) => this.setState({filterValue: e.target.value})}
-            />
+            <div className="search-container">
+              <input
+                type="text"
+                className="search-field"
+                placeholder="Search Long URLs"
+                onChange={(e) => this.setState({filterValue: e.target.value})}
+              />
+            </div>
             <div className="pop-sort">
               <button
                 onClick={() => this.sortBy('count', 'desc')}

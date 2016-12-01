@@ -59,22 +59,28 @@ a:hover {
   margin-top: 30px;
 }
 
+.search-container {
+  align-items: center;
+  display: inline-flex;
+}
+
 .search-field {
   width: 200px;
   height: 20px;
   text-indent: 5px;
   border: 2px solid #FF5722;
-
 }
 
 .pop-sort {
   display: inline-flex;
   flex-direction: column;
+  align-items: center;
 }
 
 .date-sort {
   display: inline-flex;
   flex-direction: column;
+  align-items: center;
 }
 
 .sort-button {
