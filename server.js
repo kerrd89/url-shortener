@@ -5,6 +5,8 @@ const shortID = require('shortid');
 const axios = require('axios');
 var app = express();
 const regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
+var Nightmare = require('nightmare');
+var nightmare = new Nightmare({ show: true });
 
 app.set('port', process.env.PORT || 3001);
 app.use(bodyParser.json());
@@ -33,13 +35,19 @@ app.get('/api/:shortid', (request, response) => {
 });
 
 const getTitle = (url) => {
-    axios.get(`http://textance.herokuapp.com/title/www.${url.slice(7)}`)
-    .then((response) => {
-      app.locals.urls[app.locals.urls.length-1].title = response.data;
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+    // axios.get(`http://textance.herokuapp.com/title/www.${url.slice(7)}`)
+    // .then((response) => {
+    //   app.locals.urls[app.locals.urls.length-1].title = response.data;
+    // })
+    // .catch((error) => {
+    //   console.log(error);
+    // });
+    let title = "null";
+    var selector = 'title';
+    nightmare
+    .goto(url)
+    .title()
+    .then( r => console.log(r));
 };
 
 app.post('/api/post', (request, response) => {
