@@ -4,6 +4,7 @@ import './css/reset.css';
 import './css/App.css';
 import _ from 'lodash';
 import moment from 'moment';
+const regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
 
 class App extends Component {
   constructor() {
@@ -26,6 +27,11 @@ class App extends Component {
   }
 
   postUrls(input) {
+    if(!regexp.test(input)) {
+      this.setState({displayShortUrl: "Not a valid URL"});
+      return;
+    }
+    console.log("hit here")
     axios.post(`/post`, {
       url: input
     })
@@ -35,6 +41,7 @@ class App extends Component {
       })
       .catch((error) => {
         console.log(error);
+        this.setState({displayShortUrl: error});
       });
   }
 

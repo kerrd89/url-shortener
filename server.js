@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const shortID = require('shortid');
 const axios = require('axios');
 var app = express();
+const regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
 
 app.set('port', process.env.PORT || 3001);
 app.use(bodyParser.json());
@@ -42,31 +43,20 @@ const getTitle = (url) => {
 };
 
 app.post('/api/post', (request, response) => {
-  if(!request) {
-    return response.status(422).send({
-      error: "No URL was provided"
-    });
-  }
-
   let { url } = request.body;
+  if(!regexp.test(url)) {
+    response.status(422).send({
+    error: "No URL was provided"
+  });}
   let obj = {};
   obj.shortID = shortID();
   obj.createdAt = Date.now();
   obj.longUrl = url;
   obj.count = 0;
+  obj.title = getTitle(url);
 
-  axios.get(`http://textance.herokuapp.com/title/www.${url.slice(7)}`)
-  .then((response) => {
-    obj.title = response.data;
-    app.locals.urls.push(obj);
-    response.status(201).json(obj.shortID);
-  })
-  .catch((error) => {
-    obj.title = "Service Not Available";
-    app.locals.urls.push(obj);
-    response.status(201).json(obj.shortID);
-    console.log(error);
-  });
+  app.locals.urls.push(obj);
+  response.status(201).json(obj.shortID);
 });
 
 // for testing to work
