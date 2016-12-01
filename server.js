@@ -63,8 +63,16 @@ app.post('/api/post', (request, response) => {
   obj.count = 0;
   obj.title = getTitle(url);
 
-  app.locals.urls.push(obj);
-  response.status(201).json(obj.shortID);
+  nightmare
+  .goto(url)
+  .title()
+  .then((title) => {
+    console.log(title);
+    console.log(obj);
+    // obj.title = title;
+    // app.locals.urls.push(obj);
+    // response.status(201).json(obj.shortID);
+  });
 });
 
 // for testing to work
